@@ -8,7 +8,7 @@ def make_text_file(filename, data):
     print("make text file for " + filename + "...")
     text = json.dumps(data)
     script_dir = os.path.dirname(__file__)
-    rel_path = "../download/" + filename + ".txt"
+    rel_path = "../download/IDELIST/" + filename + ".txt"
     abs_file_path = os.path.join(script_dir, rel_path)
     with open(abs_file_path, "w") as f:
         f.write(text)
@@ -18,6 +18,8 @@ if __name__ == "__main__":
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
+    if not os.path.isdir("../download/IDELIST"):
+        os.mkdir(os.path.dirname(__file__) + "/../download/IDELIST")
     
     # stock list
     print("load stock list from Internet...")
