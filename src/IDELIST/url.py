@@ -54,17 +54,17 @@ def fetch_push_init(url,TYPE):
     except:
         return 0
     js = js['data']['diff']
-    # request = []
-    # for ele in js:
-    #     if 'f13' in ele:
-    #         IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
-    #         js = {"TYPE":TYPE,    "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
-    #     else:
-    #         IDE = ele['f12']
-    #         js = {"TYPE":TYPE,    "IDS":ele['f14'],   "ID6":ele['f12']}
-        # request.append(pymongo.UpdateOne({"IDE":IDE},{"$set": js},upsert=True))
+    request = []
+    for ele in js:
+        if 'f13' in ele:
+            IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
+            js = {"TYPE":TYPE, "IDE": IDE, "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
+        else:
+            IDE = ele['f12']
+            js = {"TYPE":TYPE,  "IDE": IDE,  "IDS":ele['f14'],   "ID6":ele['f12']}
+        request.append(js)
     # if request: MDB.col_IDLIST.bulk_write(request)
-    return js
+    return request
 
 
 allfields='f2,f3,f5,f6,f8,f9,f10,f12,f13,f14,f15,f16,f17,f20,f21,f23,f24,f25,f26,f35,f37,f38,f39,f62,f66,f72,f78,f84,f100,f102,f103,f114,f265,f297'    

@@ -1,7 +1,7 @@
 
-import sys,requests,json,pymongo
+import sys,requests,json
 sys.path.insert(0,'..')
-import EM_TOOL, MDB
+import EM_TOOL
 
 
 

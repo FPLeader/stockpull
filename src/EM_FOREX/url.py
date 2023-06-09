@@ -30,18 +30,18 @@ def fetch_push_init(url,TYPE):
     except:
         return 0
     js = js['data']['diff']
-    # request = []
-    # for ele in js:
-    #     if 'f13' in ele:
-    #         IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
-    #         js = {"TYPE":TYPE,    "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
-    #     else:
-    #         IDE = ele['f12']
-    #         js = {"TYPE":TYPE,    "IDS":ele['f14'],   "ID6":ele['f12']}
-    #     # print(js)
-    #     request.append(pymongo.UpdateOne({"IDE":IDE},{"$set": js},upsert=True))
-    # if request: MDB.col_IDLIST.bulk_write(request)
-    return js
+    request = []
+    for ele in js:
+        if 'f13' in ele:
+            IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
+            js = {"TYPE":TYPE,   "IDE":IDE, "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
+        else:
+            IDE = ele['f12']
+            js = {"TYPE":TYPE,   "IDE":IDE,  "IDS":ele['f14'],   "ID6":ele['f12']}
+        # print(js)
+        request.append(js)
+    # if request: MDB.col_IDLIST.bulk_write(request)fetch_push_init
+    return request
 # for test:
 # allpages = fetch_push_init(url_LIST(pn=1,pz=1000),"forex")
 # allpages = fetch_push_init(url_LIST_RMB(pn=1,pz=1000),"forex")

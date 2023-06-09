@@ -1,6 +1,5 @@
 import os
 import json
-import numpy
 import IDELIST.url
 import EM_FOREX.url
 
@@ -47,7 +46,7 @@ if __name__ == "__main__":
 
     #GN list
     print("load GN list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_DQLIST(pn=1, pz=10000), "BK_DQ")
+    response = IDELIST.url.fetch_push_init(IDELIST.url.url_GNLIST(pn=1, pz=10000), "BK_GN")
     print("downloaded GN list!")
     make_text_file("GNLIST", response)
 
