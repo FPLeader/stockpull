@@ -127,8 +127,10 @@ def fetch_push(ide):
         }, 
         timeout=10
     )
+    js = json.loads(r.content)
+    return js
     # return parser(r.content,ide)
-    return parser_IDX_FLOW(r.content,ide)
+    # return parser_IDX_FLOW(r.content,ide)
 # print(fetch_push("BK1026"))
 
    
