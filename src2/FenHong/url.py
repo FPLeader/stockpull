@@ -21,17 +21,6 @@ def get_list(CQCXR='2000-01-01',pn=1,pz=100):
         'client' : 'WEB',
         '_' : '1686592227740'
     }
-    # siteURL = 'http://dcfm.eastmoney.com/EM_MutiSvcExpandInterface/api/js/get'
-    # para = {
-    #     'type':'DCSOBS',
-    #     'token': '70f12f2f4f091e459a279469fe49eca5',
-    #     'st': 'YAGGR',
-    #     'sr': -1,
-    #     'p': pn,
-    #     'ps': pz,
-    #     'filter':"(YAGGR>='" + CQCXR + "')",
-    #     'js':'{"data":(x),"pages":(tp)}'
-    # }
     url = requests.Request('GET', url=siteURL, params=para).prepare().url
     return fetch_push(url)
 # print(url_FenHong())
@@ -77,16 +66,6 @@ def fetch_push(url):
     )
     print(r.content)
     js = json.loads(r.content)
-    # try:
-    #     pages = int(js['pages'])
-    # except:
-    #     return 0
-    # js = js['data']
-    # request = []
-    # for ele in js:
-    #     request.append(pymongo.UpdateOne({"RowNum":ele['RowNum']},{"$set":ele},upsert=True))
-    # if request: col_CW_FH.bulk_write(request)
-    # return pages
     return js
 # print(fetch_push(url_FenHong()))
 
