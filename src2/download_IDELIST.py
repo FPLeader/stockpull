@@ -1,7 +1,83 @@
+import sys, requests, math
 import os
 import json
-import IDELIST.url
-import EM_FOREX.url
+
+siteURL = 'http://push2.eastmoney.com/api/qt/clist/get'
+def url_CALIST(fs='m:0 t:6,m:0 t:13,m:0 t:80,m:1 t:2,m:1 t:23',fields='f12,f13,f14',pn=1,pz=100):
+    para = {'pn': pn,'pz': pz,'fs': fs,'fields': fields,'po': 0, 'np': 1,'fltt': 2,'invt': 2,'fid': 'f12'}
+    return requests.Request('GET', url=siteURL, params=para).prepare().url
+
+def url_CILIST(fields = 'f12,f13,f14',pz=10000,pn=1): 
+    return url_CALIST(fs = 'm:0 t:5,m:1 s:2',fields = fields, pz=pz, pn=pn)
+
+def url_DQLIST(fields = 'f12,f14',pz=10000,pn=1): 
+    return url_CALIST(fs = 'm:90+t:1',fields = fields, pz=pz, pn=pn)
+
+def url_GNLIST(fields = 'f12,f14',pz=10000,pn=1): 
+    return url_CALIST(fs = 'm:90+t:3',fields = fields, pz=pz, pn=pn)
+
+def url_HYLIST(fields = 'f12,f14',pz=10000,pn=1): 
+    return url_CALIST(fs = 'm:90+t:2',fields = fields, pz=pz, pn=pn)
+
+def fetch_push_init(url,TYPE): 
+    r = requests.get(url, 
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
+                            'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
+        }, 
+        timeout=20
+    )
+    js = json.loads(r.content)
+    try:
+        pages = math.ceil(int(js['data']['total'])/100)+1
+    except:
+        return 0
+    js = js['data']['diff']
+    request = []
+    for ele in js:
+        if 'f13' in ele:
+            IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
+            js = {"TYPE":TYPE, "IDE": IDE, "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
+        else:
+            IDE = ele['f12']
+            js = {"TYPE":TYPE,  "IDE": IDE,  "IDS":ele['f14'],   "ID6":ele['f12']}
+        request.append(js)
+    # if request: MDB.col_IDLIST.bulk_write(request)
+    return request
+
+em_forex_siteURL = 'http://push2.eastmoney.com/api/qt/clist/get'
+
+def url_LIST(fs='b:MK0300',fields='f12,f13,f14',pn=1,pz=100):
+    para = {'pn': pn,'pz': pz,'fs': fs,'fields': fields,'po': 0, 'np': 1,'fltt': 2,'invt': 2,'fid': 'f3'}
+    return requests.Request('GET', url=em_forex_siteURL, params=para).prepare().url
+
+def em_forex_fetch_push_init(url,TYPE): 
+    r = requests.get(url, 
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
+                            'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
+        }, 
+        timeout=20
+    )
+    js = json.loads(r.content)
+    try:
+        pages = math.ceil(int(js['data']['total'])/100)+1
+    except:
+        return 0
+    js = js['data']['diff']
+    request = []
+    for ele in js:
+        if 'f13' in ele:
+            IDE = ele['f12']+{1:'1', 0:'2'}.get(ele['f13'], '')
+            js = {"TYPE":TYPE,   "IDE":IDE, "IDS":ele['f14'],   "ID6":ele['f12'],   "SEC":ele['f13']}
+        else:
+            IDE = ele['f12']
+            js = {"TYPE":TYPE,   "IDE":IDE,  "IDS":ele['f14'],   "ID6":ele['f12']}
+        # print(js)
+        request.append(js)
+    # if request: MDB.col_IDLIST.bulk_write(request)fetch_push_init
+    return request
+
 
 def make_text_file(filename, data):
     print("make text file for " + filename + "...")
@@ -22,36 +98,36 @@ if __name__ == "__main__":
     
     # stock list
     print("load stock list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_CALIST(pn=1, pz=10000), "stock")
+    response = fetch_push_init(url_CALIST(pn=1, pz=10000), "stock")
     print("downloaded stock list!")
     make_text_file("CALIST", response)
 
     #index list
     print("load index list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_CILIST(pn=1, pz=10000), "index")
+    response = fetch_push_init(url_CILIST(pn=1, pz=10000), "index")
     print("downloaded index list!")
     make_text_file("CILIST", response)
 
     #HY list
     print("load HY list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_HYLIST(pn=1, pz=10000), "BK_HY")
+    response = fetch_push_init(url_HYLIST(pn=1, pz=10000), "BK_HY")
     print("downloaded HY list!")
     make_text_file("HYLIST", response)
 
     # DQ list
     print("load DQ list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_DQLIST(pn=1, pz=10000), "BK_DQ")
+    response = fetch_push_init(url_DQLIST(pn=1, pz=10000), "BK_DQ")
     print("downloaded DQ list!")
     make_text_file("DQLIST", response)
 
     #GN list
     print("load GN list from Internet...")
-    response = IDELIST.url.fetch_push_init(IDELIST.url.url_GNLIST(pn=1, pz=10000), "BK_GN")
+    response = fetch_push_init(url_GNLIST(pn=1, pz=10000), "BK_GN")
     print("downloaded GN list!")
     make_text_file("GNLIST", response)
 
     #FOREXLIST
     print("load Forex list from Internet...")
-    response = EM_FOREX.url.fetch_push_init(EM_FOREX.url.url_LIST(pn=1, pz=1000), "forex")
+    response = em_forex_fetch_push_init(url_LIST(pn=1, pz=1000), "forex")
     print("downloaded Forex list!")
     make_text_file("FOREXLIST", response)
