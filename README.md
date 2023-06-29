@@ -13,3 +13,5 @@ In src2 folder, run 'python download_DK.py'
 # for downloading FenHong data
 In src2 folder, run 'python download_FenHong.py'
 
+# for downloading CW data
+In src2 folder, run 'python download_CW.py'

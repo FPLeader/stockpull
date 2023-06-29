@@ -34,7 +34,7 @@ def make_text_file(filename, data):
         f.write(text)
     print(filename + " file was made successfully!")
 
-def url_CW_html(js):
+def get_type(js):
     ide = js['IDE']
     siteURL = 'https://emweb.eastmoney.com/PC_HSF10/NewFinanceAnalysis/Index'
     para = {
@@ -163,9 +163,9 @@ if __name__ == "__main__":
         json_object = json.loads(json_string)
     list = [x for x in json_object]
     for index in list:
-        # stock ctype = 1
+        # get 8 last days of quarters
         dates = get_lastday_of_quarter()
-        ctype = url_CW_html(index)
+        ctype = get_type(index)
         ZCFZB2_result = get_ZCFZB2(ide=index['IDE'], companyType=ctype, dates=dates)
         make_text_file("ZCFZB2_" + index['IDE'], ZCFZB2_result)
         XJLLB2_result = get_XJLLB2(ide=index['IDE'], companyType=ctype, dates=dates)
