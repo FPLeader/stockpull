@@ -175,6 +175,4 @@ if __name__ == "__main__":
         ZYZ2_result = get_ZYZ2(ide=index['IDE'])
         make_text_file("ZYZ2_" + index['IDE'], ZYZ2_result)
         DBFX2_result = get_DBFX2(ide=index['IDE'])
-        print(DBFX2_result)
         make_text_file("DBFX2_" + index['IDE'], DBFX2_result)
-        break
