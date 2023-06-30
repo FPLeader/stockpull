@@ -39,7 +39,7 @@ def get_data_for_report_dg(pn=1, pz=100, dt='2020-01-01'):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         },
-        timeout=20
+        timeout=1000
     ).json()
     return r['data']
 

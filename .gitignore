@@ -1,5 +1,4 @@
 /env
 /log
 *.pyc
-/download/CW
-/download/QUATE
+/download
