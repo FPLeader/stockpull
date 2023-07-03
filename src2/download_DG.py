@@ -14,7 +14,7 @@ def dl_PDF(jsItem, url_fc='', path='', filename=''):
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
                                 'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
             },
-            timeout=20
+            timeout=1000
         )
         fname = os.path.join(path + "/",filename)
         with open(fname, 'wb') as fd:
@@ -49,11 +49,11 @@ def get_total_page(pn=1, pz=100, dt='2020-01-01'):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         },
-        timeout=20
+        timeout=1000
     ).json()
     return r['hits']
 
-if __name__ == "__main__":
+def main_DG():
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -101,8 +101,9 @@ if __name__ == "__main__":
     print('successfully text file made.')
 
     with open("../download/PDG/start_date.txt", "w") as f:
-        current_date = datetime.now().date()
-        f.write(str(current_date))
+        yesterday = datetime.now() - timedelta(1)
+        yesterday = datetime.strftime(yesterday, "%Y-%m-%d")
+        f.write(str(yesterday))
 
     #download report pdf files
     print("start downloading pdf files...")
@@ -121,3 +122,6 @@ if __name__ == "__main__":
             path = os.path.join(path,item['infoCode'].replace('AP','')[0:8]+'/'+item['columnType']),
             filename = item['infoCode']+'.pdf'
         )
+
+if __name__ == "__main__":
+    main_DG()

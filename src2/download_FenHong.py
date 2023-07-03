@@ -42,13 +42,13 @@ def fetch_push(url):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     print(r.content)
     js = json.loads(r.content)
     return js
 
-if __name__ == '__main__':
+def main_FenHong():
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -76,13 +76,8 @@ if __name__ == '__main__':
             count += 1
         else:
             break
-        # for y in data_response['result']['data']:
-        #     security_code = y['SECURITY_CODE']
-        #     text = json.dumps(y)
-        #     script_dir = os.path.dirname(__file__)
-        #     rel_path = "../download/FENHONG/FENHONG_" + prefix_filename + "_" + security_code +".txt"
-        #     abs_file_path = os.path.join(script_dir, rel_path)
-        #     with open(abs_file_path, "w") as f:
-        #         f.write(text)
+
+if __name__ == '__main__':
+    main_FenHong()
         
 

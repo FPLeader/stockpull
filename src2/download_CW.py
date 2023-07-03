@@ -43,7 +43,7 @@ def get_type(js):
     }
     _url = requests.Request('GET', url=siteURL, params=para).prepare().url
     try:
-        r = requests.get(_url, timeout=10,
+        r = requests.get(_url, timeout=1000,
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                                 'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
@@ -72,7 +72,7 @@ def get_ZCFZB2(ide='0000012', companyType=4, dates='2023-03-31'):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     js = json.loads(r.content)
     return js
@@ -93,7 +93,7 @@ def get_XJLLB2(ide='0000012',companyType=4,dates="2023-03-31"):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     js = json.loads(r.content)
     return js
@@ -113,7 +113,7 @@ def get_LRB2(ide='0000012',companyType=4,dates="2000-01-01"):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     js = json.loads(r.content)
     return js
@@ -130,7 +130,7 @@ def get_ZYZ2(ide='0000012'):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     js = json.loads(r.content)
     return js
@@ -146,12 +146,12 @@ def get_DBFX2(ide='0000012'):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML  '
                             'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
         }, 
-        timeout=10
+        timeout=1000
     )
     js = json.loads(r.content)
     return js
 
-if __name__ == "__main__":
+def main_CW():
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -176,3 +176,7 @@ if __name__ == "__main__":
         make_text_file("ZYZ2_" + index['IDE'], ZYZ2_result)
         DBFX2_result = get_DBFX2(ide=index['IDE'])
         make_text_file("DBFX2_" + index['IDE'], DBFX2_result)
+
+if __name__ == "__main__":
+    main_CW()
+    
