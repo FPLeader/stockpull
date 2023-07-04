@@ -1,13 +1,11 @@
-import os
-import json
-import requests
-import math
+import os, json, requests, math, tqdm, multiprocessing
+import sys, time
 from os.path import exists
 from datetime import datetime, timedelta, date
 
 def dl_PDF(jsItem, url_fc='', path='', filename=''):
     os.makedirs(path, exist_ok = True)
-    print("downloading " + filename + "...")
+    # print("downloading " + filename + "...")
     try:
         r = requests.get(url_fc,
             headers = {
@@ -53,7 +51,17 @@ def get_total_page(pn=1, pz=100, dt='2020-01-01'):
     ).json()
     return r['hits']
 
+def core_DG(item):
+    path = "../download/PDG/hyyb"
+    dl_PDF(
+        item,
+        url_fc= 'http://pdf.dfcfw.com/pdf/H3_'+item['infoCode']+'_1.pdf',
+        path = os.path.join(path,item['infoCode'].replace('AP','')[0:8]+'/'+item['columnType']),
+        filename = item['infoCode']+'.pdf'
+    )
+
 def main_DG():
+    print("Starting DG report download...")
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -77,14 +85,15 @@ def main_DG():
     total_pages = int(total_count/pz) + 1
 
     # make hyyb report list file
-    print("writing hyyb.txt file...")
-    print("total pages is " + str(total_pages))
-
+    print("Starting report list download...")
+    print("Writing hyyb.txt file...")
+    print("Total pages is " + str(total_pages))
+    
     with open("../download/PDG/hyyb.txt", "w") as f:
         f.write('[')
-        for i in range(total_pages):
+        for i in tqdm.tqdm(range(total_pages)):
             page_number = i + 1
-            print("writing page" + str(page_number) + "...")
+            # print("writing page" + str(page_number) + "...")
             list_response = get_data_for_report_dg(pn=page_number, pz=100, dt=start_date)
             count = 1
             list_length = len(list_response)
@@ -96,9 +105,10 @@ def main_DG():
                     if (count != list_length):
                         f.write(',')
                 count += 1
+
         f.write(']')
     
-    print('successfully text file made.')
+    print('Finished report list download successfully!')
 
     with open("../download/PDG/start_date.txt", "w") as f:
         yesterday = datetime.now() - timedelta(1)
@@ -106,22 +116,19 @@ def main_DG():
         f.write(str(yesterday))
 
     #download report pdf files
-    print("start downloading pdf files...")
+    print("Starting report files download...")
     with open("../download/PDG/hyyb.txt", "r") as f:
         all_list = f.read()
     
-    json_data = json.loads(all_list)
+    list = json.loads(all_list)
     path = "../download/PDG/hyyb"
     os.makedirs(path, exist_ok = True)
-    for item in json_data:
-        # url_fc= 'http://pdf.dfcfw.com/pdf/H3_'+item['infoCode']+'_1.pdf'
-        # print(url_fc)
-        dl_PDF(
-            item,
-            url_fc= 'http://pdf.dfcfw.com/pdf/H3_'+item['infoCode']+'_1.pdf',
-            path = os.path.join(path,item['infoCode'].replace('AP','')[0:8]+'/'+item['columnType']),
-            filename = item['infoCode']+'.pdf'
-        )
+    multiprocessing.freeze_support();
+    pool = multiprocessing.Pool(processes=20)
+    for _ in tqdm.tqdm(pool.imap_unordered(core_DG, list), total=len(list)): pass
+    
+    print("Finished report file download successfully!")
+    print("----------------------------------------------")
 
 if __name__ == "__main__":
     main_DG()

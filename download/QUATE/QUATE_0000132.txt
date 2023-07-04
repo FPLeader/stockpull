@@ -1,1 +1,1 @@
-{"rc": 100, "rt": 1, "svr": 181669733, "lt": 2, "full": 1, "dlmkts": "", "data": null}
+{"rc": 100, "rt": 1, "svr": 182482250, "lt": 2, "full": 1, "dlmkts": "", "data": null}

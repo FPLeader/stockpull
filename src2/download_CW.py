@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+import tqdm, multiprocessing
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta, date
 import EM_TOOL
@@ -32,7 +33,7 @@ def make_text_file(filename, data):
     abs_file_path = os.path.join(script_dir, rel_path)
     with open(abs_file_path, "w", encoding='utf-8') as f:
         f.write(text)
-    print(filename + " file was made successfully!")
+    # print(filename + " file was made successfully!")
 
 def get_type(js):
     ide = js['IDE']
@@ -151,7 +152,23 @@ def get_DBFX2(ide='0000012'):
     js = json.loads(r.content)
     return js
 
+def core_CW(index):
+    # get 8 last days of quarters
+    dates = get_lastday_of_quarter()
+    ctype = get_type(index)
+    ZCFZB2_result = get_ZCFZB2(ide=index['IDE'], companyType=ctype, dates=dates)
+    make_text_file("ZCFZB2_" + index['IDE'], ZCFZB2_result)
+    XJLLB2_result = get_XJLLB2(ide=index['IDE'], companyType=ctype, dates=dates)
+    make_text_file("XJLLB2_" + index['IDE'], XJLLB2_result)
+    LRB2_result = get_LRB2(ide=index['IDE'], companyType=ctype, dates=dates)
+    make_text_file("LRB2_" + index['IDE'], LRB2_result)
+    ZYZ2_result = get_ZYZ2(ide=index['IDE'])
+    make_text_file("ZYZ2_" + index['IDE'], ZYZ2_result)
+    DBFX2_result = get_DBFX2(ide=index['IDE'])
+    make_text_file("DBFX2_" + index['IDE'], DBFX2_result)
+
 def main_CW():
+    print("Starting CW download...")
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -162,21 +179,13 @@ def main_CW():
         json_string = f.read()
         json_object = json.loads(json_string)
     list = [x for x in json_object]
-    for index in list:
-        # get 8 last days of quarters
-        dates = get_lastday_of_quarter()
-        ctype = get_type(index)
-        ZCFZB2_result = get_ZCFZB2(ide=index['IDE'], companyType=ctype, dates=dates)
-        make_text_file("ZCFZB2_" + index['IDE'], ZCFZB2_result)
-        XJLLB2_result = get_XJLLB2(ide=index['IDE'], companyType=ctype, dates=dates)
-        make_text_file("XJLLB2_" + index['IDE'], XJLLB2_result)
-        LRB2_result = get_LRB2(ide=index['IDE'], companyType=ctype, dates=dates)
-        make_text_file("LRB2_" + index['IDE'], LRB2_result)
-        ZYZ2_result = get_ZYZ2(ide=index['IDE'])
-        make_text_file("ZYZ2_" + index['IDE'], ZYZ2_result)
-        DBFX2_result = get_DBFX2(ide=index['IDE'])
-        make_text_file("DBFX2_" + index['IDE'], DBFX2_result)
+    
+    multiprocessing.freeze_support();
+    pool = multiprocessing.Pool(processes=20)
+    for _ in tqdm.tqdm(pool.imap_unordered(core_CW, list), total=len(list)): pass
 
+    print("Finished CW download successfully!")
+    print("-------------------------------------------------")
 if __name__ == "__main__":
     main_CW()
     

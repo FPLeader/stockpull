@@ -77,18 +77,20 @@ def em_forex_fetch(url,TYPE):
     # if request: MDB.col_IDLIST.bulk_write(request)fetch_idelist
     return request
 
-
 def make_idelist_text_file(filename, data):
-    print("make text file for " + filename + "...")
+    # print("make text file for " + filename + "...")
     text = json.dumps(data)
     script_dir = os.path.dirname(__file__)
     rel_path = "../download/IDELIST/" + filename + ".txt"
     abs_file_path = os.path.join(script_dir, rel_path)
     with open(abs_file_path, "w") as f:
         f.write(text)
-    print(filename + " file was made successfully!")
+    # print(filename + " file was made successfully!")
 
 def main_IDELIST():
+    print("Starting IDELIST download...")
+    print("Downloading IDELIST...")
+
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -96,40 +98,42 @@ def main_IDELIST():
         os.mkdir(os.path.dirname(__file__) + "/../download/IDELIST")
     
     # stock list
-    print("load stock list from Internet...")
+    # print("load stock list from Internet...")
     response = fetch_idelist(url_CALIST(pn=1, pz=10000), "stock")
-    print("downloaded stock list!")
+    # print("downloaded stock list!")
     make_idelist_text_file("CALIST", response)
 
     #index list
-    print("load index list from Internet...")
+    # print("load index list from Internet...")
     response = fetch_idelist(url_CILIST(pn=1, pz=10000), "index")
-    print("downloaded index list!")
+    # print("downloaded index list!")
     make_idelist_text_file("CILIST", response)
 
     #HY list
-    print("load HY list from Internet...")
+    # print("load HY list from Internet...")
     response = fetch_idelist(url_HYLIST(pn=1, pz=10000), "BK_HY")
-    print("downloaded HY list!")
+    # print("downloaded HY list!")
     make_idelist_text_file("HYLIST", response)
 
     # DQ list
-    print("load DQ list from Internet...")
+    # print("load DQ list from Internet...")
     response = fetch_idelist(url_DQLIST(pn=1, pz=10000), "BK_DQ")
-    print("downloaded DQ list!")
+    # print("downloaded DQ list!")
     make_idelist_text_file("DQLIST", response)
 
     #GN list
-    print("load GN list from Internet...")
+    # print("load GN list from Internet...")
     response = fetch_idelist(url_GNLIST(pn=1, pz=10000), "BK_GN")
-    print("downloaded GN list!")
+    # print("downloaded GN list!")
     make_idelist_text_file("GNLIST", response)
 
     #FOREXLIST
-    print("load Forex list from Internet...")
+    # print("load Forex list from Internet...")
     response = em_forex_fetch(url_LIST(pn=1, pz=1000), "forex")
-    print("downloaded Forex list!")
+    # print("downloaded Forex list!")
     make_idelist_text_file("FOREXLIST", response)
+    print("Finished IDELIST download successfully!")
+    print("------------------------------------------------")
 
 if __name__ == "__main__":
     main_IDELIST()

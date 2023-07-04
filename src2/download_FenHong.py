@@ -44,11 +44,12 @@ def fetch_push(url):
         }, 
         timeout=1000
     )
-    print(r.content)
+    # print(r.content)
     js = json.loads(r.content)
     return js
 
 def main_FenHong():
+    print("Starting FenHong download...")
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
@@ -76,6 +77,8 @@ def main_FenHong():
             count += 1
         else:
             break
+    print("Finished FenHong download successfully!")
+    print("---------------------------------------------")
 
 if __name__ == '__main__':
     main_FenHong()

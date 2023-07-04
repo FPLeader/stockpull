@@ -2,6 +2,7 @@ import os, sys, requests, math, configparser, json
 from os.path import exists
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta, date
+import tqdm, multiprocessing
 import EM_TOOL
 import download_IDELIST, download_DK, download_FenHong, download_CW, download_DG
 

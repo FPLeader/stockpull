@@ -1,5 +1,6 @@
 import configparser
 import os
+import tqdm, multiprocessing
 import requests, json
 import EM_TOOL
 
@@ -50,7 +51,7 @@ def make_dk_text_file(filename, data):
     abs_file_path = os.path.join(script_dir, rel_path)
     with open(abs_file_path, "w") as f:
         f.write(text)
-    print("QUATE_" + filename + " file was made successfully!")
+    # print("QUATE_" + filename + " file was made successfully!")
 
 def download_stock_data(stock):
     parser = configparser.ConfigParser()
@@ -63,21 +64,47 @@ def handle_dk_list_file(filename):
         json_string = f.read()
         json_object = json.loads(json_string)
     list = [x for x in json_object]
-    for index in list:
-        download_stock_data(index)
+    multiprocessing.freeze_support();
+    pool = multiprocessing.Pool(processes=20)
+    for _ in tqdm.tqdm(pool.imap_unordered(download_stock_data, list), total=len(list)): pass
+    # for index in list:
+    #     download_stock_data(index)
+
+def handle_forex_list(index):
+    parser = configparser.ConfigParser()
+    parser.read('config.ini')
+    response = {'url': url_DK(id6=index['IDE'], sec=index['SEC'] if 'SEC' in index else '', lmt=1), 'module': 'DK_FOREX', 'IDE': index['IDE']}
+    make_dk_text_file(index["IDE"], response)
 
 def main_DK():
+    print("Starting DK download...")
     # checking if download folder exists or not.
     if not os.path.isdir("../download"):
         os.mkdir(os.path.dirname(__file__) + "/../download")
     if not os.path.isdir("../download/QUATE"):
         os.mkdir(os.path.dirname(__file__) + "/../download/QUATE")
 
+    print("Starting CALIST download...")
     handle_dk_list_file("CALIST")
+    print("Finished CALIST download successfully!")
+    
+    print("Starting CILIST download...")
     handle_dk_list_file("CILIST")
+    print("Finished CILIST download successfully!")
+    
+    print("Starting HYLIST download...")
     handle_dk_list_file("HYLIST")
+    print("Finished HYLIST download successfully!")
+    
+    print("Starting DQLIST download...")
     handle_dk_list_file("DQLIST")
+    print("Finished DQLIST download successfully!")
+    
+    print("Starting GNLIST download...")
     handle_dk_list_file("GNLIST")
+    print("Finished GNLIST download successfully!")
+    
+    print("Starting FOREXLIST download...")
     
     # FOREX LIST
     with open ("../download/IDELIST/FOREXLIST.txt", "r") as f:
@@ -86,11 +113,12 @@ def main_DK():
     list = [x for x in json_object]
     # lmt = int(parser['download']['FETCH_LIMIT'])
     lmt = 1000
-    for index in list:
-        parser = configparser.ConfigParser()
-        parser.read('config.ini')
-        response = {'url': url_DK(id6=index['IDE'], sec=index['SEC'] if 'SEC' in index else '', lmt=1), 'module': 'DK_FOREX', 'IDE': index['IDE']}
-        make_dk_text_file(index["IDE"], response)
+    multiprocessing.freeze_support();
+    pool = multiprocessing.Pool(processes=20)
+    for _ in tqdm.tqdm(pool.imap_unordered(handle_forex_list, list), total=len(list)): pass
+    print("Finished FOREXLIST download successfully!")
+    print("Finished all DK list download successfully!")
+    print("------------------------------------------------")
 
 if __name__ == "__main__":
     main_DK()
