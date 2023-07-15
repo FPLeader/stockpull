@@ -12,7 +12,7 @@ def dl_PDF(jsItem, url_fc='', path='', filename=''):
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
                                 'like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.77'
             },
-            timeout=1000
+            timeout=10
         )
         fname = os.path.join(path + "/",filename)
         with open(fname, 'wb') as fd:
@@ -26,7 +26,7 @@ def get_url_for_report_dg(pn=1,pz=100,dt='2020-01-01'):
     para = {
         'pageNo': pn,
         'pageSize': pz,
-        'endTime': '2050-12-31',
+        'endTime': '2053-05-03',
         'beginTime': dt
     }
     return requests.Request('GET', url=siteURL, params=para).prepare().url
@@ -68,7 +68,7 @@ def main_DG():
     if not os.path.isdir("../download/CW"):
         os.mkdir(os.path.dirname(__file__) + "/../download/DG")
 
-    start_date = '2023-06-01'
+    start_date = '2022-04-27'
     pz = 100
 
     if not os.path.isdir("../download/PDG"):
@@ -124,7 +124,7 @@ def main_DG():
     path = "../download/PDG/hyyb"
     os.makedirs(path, exist_ok = True)
     multiprocessing.freeze_support();
-    pool = multiprocessing.Pool(processes=20)
+    pool = multiprocessing.Pool(processes=10)
     for _ in tqdm.tqdm(pool.imap_unordered(core_DG, list), total=len(list)): pass
     
     print("Finished report file download successfully!")
