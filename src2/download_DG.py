@@ -26,7 +26,7 @@ def get_url_for_report_dg(pn=1,pz=100,dt='2020-01-01'):
     para = {
         'pageNo': pn,
         'pageSize': pz,
-        'endTime': '2053-05-03',
+        'endTime': '2050-08-31',
         'beginTime': dt
     }
     return requests.Request('GET', url=siteURL, params=para).prepare().url
@@ -68,7 +68,7 @@ def main_DG():
     if not os.path.isdir("../download/CW"):
         os.mkdir(os.path.dirname(__file__) + "/../download/DG")
 
-    start_date = '2022-04-27'
+    start_date = '2023-07-21'
     pz = 100
 
     if not os.path.isdir("../download/PDG"):
